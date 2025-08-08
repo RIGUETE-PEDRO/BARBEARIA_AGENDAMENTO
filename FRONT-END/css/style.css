@@ -71,6 +71,12 @@ input[type="checkbox"] {
     position: relative;
 }
 
+.box h2 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: white;
+}
 
 input[type="checkbox"]:checked::before {
     content: "✔";
