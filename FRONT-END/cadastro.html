@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cadastro - Barbearia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
-   <link rel="stylesheet" href="css/style-cadastro.css">
-   
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="css/style-cadastro.css">
 </head>
 
 <body>
@@ -21,17 +21,26 @@
         <input type="email" id="email" name="email" placeholder="Digite seu email" required />
 
         <label for="senha">Senha</label>
-        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required />
+        <div class="input-com-icone">
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required />
+            <span class="material-symbols-outlined visibility-icon">visibility</span>
+        </div>
+        <p id="texto-senha"></p>
 
         <label for="confirmaSenha">Confirme a Senha</label>
-        <input type="password" id="confirmaSenha" name="confirmaSenha" placeholder="Confirme sua senha" required />
-
+        <div class="input-com-icone">
+            <input type="password" id="confirmaSenha" name="confirmaSenha" placeholder="Confirme sua senha" required />
+            <span class="material-symbols-outlined visibility-icon">visibility</span>
+        </div>
+        <p id="text-confirma"></p>
+        <p id="text-confirma"></p>
         <button type="submit">Cadastrar</button>
 
         <div class="back-login">
             <a href="index.html">Voltar para Login</a>
         </div>
     </form>
+    <script src="js/submit.js"></script>
 </body>
 
 </html>

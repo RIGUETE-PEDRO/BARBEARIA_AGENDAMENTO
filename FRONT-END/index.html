@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <body>
     <div class="container">
         <div class="conteiner-form">
-            <form action="/processar_formulario" method="post" class="box">
+            <form action="/login" method="post" class="box">
                 <h2>LOGIN</h2>
                 <h4 class="txt"><span class="material-symbols-outlined">
                         person
@@ -22,7 +22,10 @@
                 <h4 class="txt"><span class="material-symbols-outlined">
                         lock
                     </span>SENHA</h4>
-                <input placeholder="digite sua senha" type="password" name="senha" id="" class="input" required>
+                <div class="input-password">
+                    <input placeholder="digite sua senha" type="password" name="senha" class="input" required>
+                    <span class="material-symbols-outlined visibility-icon">visibility</span>
+                </div>
                 <label class="remember txt">
                     Lembrar Senha
                     <input id="check" type="checkbox" name="check">
@@ -35,6 +38,10 @@
             </form>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <script src="js/script.js"></script>
+    
 </body>
 
 </html>
