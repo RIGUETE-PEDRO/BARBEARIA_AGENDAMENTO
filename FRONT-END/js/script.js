@@ -6,20 +6,20 @@ form.addEventListener("submit", (e) => {
   //evita recarregar a pagina
   e.preventDefault();
 
-  const email = form.email.value;
+  const usuario = form.email.value;
   const senhaOriginal = form.senha.value;
 
   // Hash SHA-256 da senha com CryptoJS
   //estou criptografando a senha para maior segurança
   const senhaHash = CryptoJS.SHA256(senhaOriginal).toString();
-  const lembrar = form.check.checked;
+  
   //local onde se encontra o backend
   fetch("http://localhost:8080/login", {
     //metodo da requisição
     method: "POST",
     headers: { "Content-Type": "application/json" },
     //corpo da requisição
-    body: JSON.stringify({ email, senha: senhaHash, lembrar }),
+    body: JSON.stringify({ usuario, senha: senhaHash }),
   })
     //metodos de resposta referente a o erro que aparecerar no console do navegador
     .then((res) => {
