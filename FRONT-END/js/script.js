@@ -1,40 +1,50 @@
-//requisição para o back
-
+// Seleciona o formulário
 const form = document.querySelector("form.box");
 
 form.addEventListener("submit", (e) => {
-  //evita recarregar a pagina
-  e.preventDefault();
+  e.preventDefault(); // evita recarregar a página
 
   const usuario = form.email.value;
   const senhaOriginal = form.senha.value;
 
-  // Hash SHA-256 da senha com CryptoJS
-  //estou criptografando a senha para maior segurança
-  const senhaHash = CryptoJS.SHA256(senhaOriginal).toString();
-  
-  //local onde se encontra o backend
-  fetch("http://localhost:8080/login", {
-    //metodo da requisição
+  // Envia direto a senha (confie na criptografia do HTTPS)
+  fetch("http://localhost:8080/login", { // trocar para https em produção
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    //corpo da requisição
-    body: JSON.stringify({ usuario, senha: senhaHash }),
+    body: JSON.stringify({ usuario, senha: senhaOriginal }),
   })
-    //metodos de resposta referente a o erro que aparecerar no console do navegador
     .then((res) => {
-      if (!res.ok) throw new Error("Erro no servidor");
-      return res.json();
-    })
-    .then((data) => {
-      console.log("Sucesso:", data);
-      alert("Login enviado com sucesso!");
+      if (!res.ok) throw new Error("Usuario ou senha errada");
+      return res.text();
+      })
+    .then((data) => { // 'data' aqui será a string "true" se o login for bem-sucedido
+        
+        console.log("Resposta do servidor:", data);
+
+        // Verifica se a resposta do servidor é "true"
+        if (data === "true") {
+            // --- INÍCIO DA ALTERAÇÃO ---
+            
+            // Exibe um alerta rápido (opcional)
+            alert("Login realizado com sucesso! Redirecionando...");
+
+            // Redireciona para a nova página
+            window.location.href = "paginaCentral.html"; // <-- COLOQUE A URL DA SUA PÁGINA AQUI
+
+            // --- FIM DA ALTERAÇÃO ---
+        } else {
+            // Se a resposta não for "true", trata como erro
+            throw new Error("Resposta inesperada do servidor.");
+        }
     })
     .catch((err) => {
-      console.error("Erro:", err);
-      alert("Erro ao enviar o login");
+        console.error("Erro no login:", err.message);
+        alert(err.message); // Exibe "Usuário ou senha inválidos" ou outra mensagem de erro
     });
 });
+
+
+
 
 ////parte de visualizar senha
 
