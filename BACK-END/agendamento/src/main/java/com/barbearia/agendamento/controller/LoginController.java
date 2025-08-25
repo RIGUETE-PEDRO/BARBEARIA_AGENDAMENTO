@@ -1,12 +1,15 @@
 package com.barbearia.agendamento.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.barbearia.agendamento.dto.LoginRequestDTO;
 import com.barbearia.agendamento.service.LoginService;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class LoginController {
 
     private final LoginService loginService;
