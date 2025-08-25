@@ -85,3 +85,22 @@ visibilityIcons.forEach(icon => {
   });
 })
 
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const usuario = form.email.value;
+  const senhaOriginal = form.senha.value;
+  const nome = form.nome.value;
+
+  fetch("http://localhost:8081/cadastro", {
+    method: "POST",
+    headers: { "Content-Type": "application.json"},
+    body: JSON.stringify({ usuario,nome,senhaOriginal}),
+  })
+  .then((res) => {
+    if(!res.ok) throw new Error ("não foi possivel efetuar o cadastro");
+    return res.text();
+  })
+
+})

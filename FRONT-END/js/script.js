@@ -8,7 +8,7 @@ form.addEventListener("submit", (e) => {
   const senhaOriginal = form.senha.value;
 
   // Envia direto a senha (confie na criptografia do HTTPS)
-  fetch("http://localhost:8080/login", { // trocar para https em produção
+  fetch("http://localhost:8081/login", { // trocar para https em produção
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ usuario, senha: senhaOriginal }),
