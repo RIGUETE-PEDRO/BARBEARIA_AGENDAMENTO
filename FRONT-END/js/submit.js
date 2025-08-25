@@ -93,14 +93,21 @@ form.addEventListener("submit", (e) => {
   const senhaOriginal = form.senha.value;
   const nome = form.nome.value;
 
-  fetch("http://localhost:8081/cadastro", {
+  fetch("http://127.0.0.1:8081/cadastro", {
     method: "POST",
-    headers: { "Content-Type": "application.json"},
-    body: JSON.stringify({ usuario,nome,senhaOriginal}),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ usuario, nome, senha: senhaOriginal }),
   })
   .then((res) => {
-    if(!res.ok) throw new Error ("não foi possivel efetuar o cadastro");
+    if (!res.ok) throw new Error("Não foi possível efetuar o cadastro");
     return res.text();
   })
-
-})
+  .then((data) => {
+    console.log("✅ Cadastro realizado:", data);
+    alert("Cadastro realizado com sucesso!");
+  })
+  .catch((err) => {
+    console.error("❌ Erro no cadastro:", err);
+    alert("Erro ao cadastrar usuário!");
+  });
+});
