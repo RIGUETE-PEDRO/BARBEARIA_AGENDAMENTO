@@ -13,10 +13,10 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("*") // <<< MUDANÇA AQUI
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                registry.addMapping("/**") 
+                        .allowedOrigins("*") //determina qual o ip sera acessivel ao back
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") //tipos de requisiçoes aceitaveis
+                        .allowedHeaders("*"); 
             }
         };
     }
