@@ -1,8 +1,8 @@
 package com.barbearia.agendamento.service;
 import org.springframework.stereotype.Service;
 
-import com.barbearia.agendamento.entity.TipoUsuario;
-import com.barbearia.agendamento.repository.TipoUsuarioRepository;
+import com.barbearia.agendamento.entity.CadastroUsuario;
+import com.barbearia.agendamento.repository.CadastroUsuarioRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
@@ -11,14 +11,14 @@ import java.util.Optional;
 public class LoginService {
 
     // Repositório para acessar o banco
-    private final TipoUsuarioRepository usuarioRepository;
+    private final CadastroUsuarioRepository usuarioRepository;
     
     // Classe que faz comparação de senhas criptografadas com BCrypt
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     
     // Injeção de dependência pelo construtor
-    public LoginService(TipoUsuarioRepository usuarioRepository) {
+    public LoginService(CadastroUsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
         
     }
@@ -27,7 +27,7 @@ public class LoginService {
     public boolean autenticar(String email, String senhaDigitada) {
 
         // Busca o usuário pelo email
-        Optional<TipoUsuario> usuarioOpt = usuarioRepository.findByEmail(email);
+        Optional<CadastroUsuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         // Se não encontrou, retorna falso
         if (usuarioOpt.isEmpty()) {
@@ -36,7 +36,7 @@ public class LoginService {
         }
         
         // Pega o usuário encontrado
-        TipoUsuario usuario = usuarioOpt.get();
+        CadastroUsuario usuario = usuarioOpt.get();
 
         // --- INÍCIO DO CÓDIGO DE DEPURAÇÃO ---
         // Adicione estas linhas para ver os valores no console
