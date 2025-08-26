@@ -1,24 +1,51 @@
 package com.barbearia.agendamento.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.barbearia.agendamento.dto.CadastroDTO;
+import com.barbearia.agendamento.entity.CadastroUsuario;
+import com.barbearia.agendamento.entity.TipoUsuario;
+import com.barbearia.agendamento.repository.TipoUsuarioRepository;
+import com.barbearia.agendamento.service.CadastroUsuarioService;
 
 @RestController
 @RequestMapping("/cadastro")
 public class CadastroController {
 
+    @Autowired
+    private CadastroUsuarioService usuarioService;
+
+    @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
+
+    // Criptografia
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @PostMapping
     public String cadastrarUsuario(@RequestBody CadastroDTO cadastro) {
-        System.out.println("Usuário: ");
-        System.out.println("Nome: ");
-        System.out.println("Senha: ");
+        CadastroUsuario usuario = new CadastroUsuario();
+        usuario.setNome(cadastro.getNome());
+        usuario.setEmail(cadastro.getEmail());
 
-        // Aqui você colocaria lógica para salvar no banco, etc.
+        // Criptografa a senha
+        String senhaCriptografada = passwordEncoder.encode(cadastro.getSenha());
+        usuario.setSenha(senhaCriptografada);
+
+        usuario.setTelefone(cadastro.getTelefone());
+
+        // TipoUsuario fixo (ID = 3)
+        TipoUsuario tipo = tipoUsuarioRepository.findById(3)
+                .orElseThrow(() -> new RuntimeException("TipoUsuario não encontrado"));
+        usuario.setTipoUsuario(tipo);
+
+        // Salva no banco
+        usuarioService.salvar(usuario);
+
         return "Cadastro recebido com sucesso!";
     }
-
 }

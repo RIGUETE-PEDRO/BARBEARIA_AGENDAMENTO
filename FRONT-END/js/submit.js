@@ -89,7 +89,7 @@ visibilityIcons.forEach(icon => {
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const usuario = form.email.value;
+  const email = form.email.value;
   const senhaOriginal = form.senha.value;
   const nome = form.nome.value;
   const telefone = form.telefone.value;
@@ -97,7 +97,7 @@ form.addEventListener("submit", (e) => {
   fetch("http://127.0.0.1:8081/cadastro", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usuario, nome, senha: senhaOriginal ,telefone}),
+    body: JSON.stringify({ email, nome, senha: senhaOriginal ,telefone,tipoUsuario : 3}),
   })
   .then((res) => {
     if (!res.ok) throw new Error("Não foi possível efetuar o cadastro");
