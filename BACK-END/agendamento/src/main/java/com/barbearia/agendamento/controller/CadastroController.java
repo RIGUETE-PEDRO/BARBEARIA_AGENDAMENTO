@@ -38,8 +38,14 @@ public class CadastroController {
 
         usuario.setTelefone(cadastro.getTelefone());
 
-        // TipoUsuario fixo (ID = 3)
-        TipoUsuario tipo = tipoUsuarioRepository.findById(3)
+        // Se o front não enviar o tipoUsuarioId, usa 3 como padrão
+        Integer tipoId = cadastro.getTipoUsuarioId();
+        if (tipoId == null) {
+            tipoId = 3;
+        }
+
+        // Busca TipoUsuario no banco
+        TipoUsuario tipo = tipoUsuarioRepository.findById(tipoId)
                 .orElseThrow(() -> new RuntimeException("TipoUsuario não encontrado"));
         usuario.setTipoUsuario(tipo);
 
@@ -48,4 +54,5 @@ public class CadastroController {
 
         return "Cadastro recebido com sucesso!";
     }
+
 }

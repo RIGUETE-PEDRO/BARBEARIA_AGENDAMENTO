@@ -97,7 +97,7 @@ form.addEventListener("submit", (e) => {
   fetch("http://127.0.0.1:8081/cadastro", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, nome, senha: senhaOriginal ,telefone,tipoUsuario : 3}),
+    body: JSON.stringify({ email, nome, senha: senhaOriginal ,telefone,tipoUsuarioId : 3}),
   })
   .then((res) => {
     if (!res.ok) throw new Error("Não foi possível efetuar o cadastro");
