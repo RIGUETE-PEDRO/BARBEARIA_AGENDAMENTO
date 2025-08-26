@@ -1,4 +1,11 @@
-const usuario = "Pedro henrique";
+fetch("http://localhost:8081/usuario/nome/1")
+  .then(response => response.text())
+  .then(nome => {
+      console.log("Nome do usuário:", nome);
+      document.getElementById("nomeUsuario").innerText = nome;
+  })
+  .catch(err => console.error(err));
+
 
 document.getElementById("UserName").innerHTML = usuario;
 
