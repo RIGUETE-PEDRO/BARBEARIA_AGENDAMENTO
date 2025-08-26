@@ -1,41 +1,22 @@
 package com.barbearia.agendamento.entity;
 
-
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
-@Entity // Indica que esta classe é uma entidade JPA (mapeada para tabela do banco)
-@Table(name = "TIPO_USUARIO") // Nome exato da tabela no banco
+@Entity
+@Table(name = "TIPO_USUARIO")
 public class TipoUsuario {
 
-    @Id // Indica que este campo é a chave primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto incremento no MySQL
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String nome; // Nome do usuário
+    @Column(name = "CARGO", unique = true, nullable = false)
+    private String cargo; // Ex.: "Cliente", "Barbeiro", "Admin"
 
-    @Column(unique = true) // Email não pode ser duplicado
-    private String email;
-
-    private String senha; // Aqui ficará a senha (idealmente criptografada)
-
-    @Column(name = "data_criacao") // Nome da coluna no banco
-    private LocalDateTime dataCriacao;
-
-    // Getters e Setters para acessar/alterar os valores
-
+    // Getters e Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getSenha() { return senha; }
-    public void setSenha(String senha) { this.senha = senha; }
-
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+    public String getCargo() { return cargo; }
+    public void setCargo(String cargo) { this.cargo = cargo; }
 }

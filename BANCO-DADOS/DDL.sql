@@ -1,5 +1,5 @@
 -- ===================================================================
--- SCRIPT COMPLETO PARA BANCO DE DADOS DE BARBEARIA (FOCO EM AGENDAMENTO)
+-- SCRIPT COMPLETO REVISADO PARA BANCO DE DADOS DE BARBEARIA
 -- ===================================================================
 
 -- Apaga e recria o banco para um ambiente limpo
@@ -7,62 +7,63 @@ DROP DATABASE IF EXISTS BARBEARIA;
 CREATE DATABASE BARBEARIA;
 USE BARBEARIA;
 
--- Cria um usuário específico para a aplicação, por segurança
+-- Cria usuário específico para a aplicação
 DROP USER IF EXISTS 'barbearia'@'localhost';
 CREATE USER 'barbearia'@'localhost' IDENTIFIED BY 'barbearia@1234';
-GRANT SELECT, INSERT, UPDATE, DELETE ON BARBEARIA.* TO 'barbearia'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, ALTER ON BARBEARIA.* TO 'barbearia'@'localhost';
 
 -- -------------------------------------------------------------------
 -- TABELAS DE ESTRUTURA BÁSICA
 -- -------------------------------------------------------------------
 
--- Tabela para definir os papéis (Cliente, Barbeiro, Admin)
+-- Papéis de usuário
 CREATE TABLE TIPO_USUARIO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    NOME VARCHAR(50) NOT NULL UNIQUE
+    CARGO VARCHAR(50) NOT NULL UNIQUE
 );
 
--- Tabela central de usuários
+-- Usuários
 CREATE TABLE USUARIO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     ID_TIPO INT NOT NULL,
     NOME VARCHAR(120) NOT NULL,
     EMAIL VARCHAR(100) NOT NULL UNIQUE,
     SENHA VARCHAR(255) NOT NULL,
-    TELEFONE VARCHAR(15),
+    TELEFONE VARCHAR(20),
     DATA_CRIACAO TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     DATA_ATUALIZACAO TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (ID_TIPO) REFERENCES TIPO_USUARIO(ID)
 );
 
--- Tabela com o catálogo de serviços oferecidos
+-- Catálogo de serviços
 CREATE TABLE SERVICO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     NOME VARCHAR(100) NOT NULL,
     DESCRICAO TEXT,
     PRECO DECIMAL(10,2) NOT NULL,
-    DURACAO_MINUTOS INT NOT NULL, -- Essencial para calcular o fim do horário
+    DURACAO_MINUTOS INT NOT NULL,
     DATA_CRIACAO TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- -------------------------------------------------------------------
--- TABELAS DE CONTROLE DE DISPONIBILIDADE DO BARBEIRO
+-- HORÁRIOS DE TRABALHO
 -- -------------------------------------------------------------------
 
--- Tabela para definir a jornada de trabalho padrão de cada barbeiro
+-- Jornada de trabalho por intervalo (permite múltiplos intervalos por dia)
 CREATE TABLE HORARIO_TRABALHO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     ID_BARBEIRO INT NOT NULL,
     DIA_SEMANA INT NOT NULL, -- 0=Domingo, 1=Segunda, ..., 6=Sábado
     HORA_INICIO TIME NOT NULL,
     HORA_FIM TIME NOT NULL,
-    INICIO_INTERVALO TIME, -- Opcional, para horário de almoço
+    INICIO_INTERVALO TIME,
     FIM_INTERVALO TIME,
-    FOREIGN KEY (ID_BARBEIRO) REFERENCES USUARIO(ID),
-    UNIQUE(ID_BARBEIRO, DIA_SEMANA) -- Um barbeiro só tem um horário por dia da semana
+    FOREIGN KEY (ID_BARBEIRO) REFERENCES USUARIO(ID)
 );
 
--- Tabela para bloqueios específicos (férias, consultas médicas, etc.)
+CREATE INDEX idx_horario_barbeiro_dia ON HORARIO_TRABALHO(ID_BARBEIRO, DIA_SEMANA);
+
+-- Bloqueios específicos (férias, consultas médicas)
 CREATE TABLE BLOQUEIO_AGENDA (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     ID_BARBEIRO INT NOT NULL,
@@ -72,12 +73,12 @@ CREATE TABLE BLOQUEIO_AGENDA (
     FOREIGN KEY (ID_BARBEIRO) REFERENCES USUARIO(ID)
 );
 
+CREATE INDEX idx_bloqueio_barbeiro_data ON BLOQUEIO_AGENDA(ID_BARBEIRO, DATA_INICIO, DATA_FIM);
 
 -- -------------------------------------------------------------------
--- TABELAS PRINCIPAIS DE OPERAÇÃO (AGENDAMENTO E FEEDBACK)
+-- AGENDAMENTOS E FEEDBACK
 -- -------------------------------------------------------------------
 
--- Tabela de agendamentos, agora com o campo STATUS
 CREATE TABLE AGENDAMENTO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     ID_CLIENTE INT NOT NULL,
@@ -85,7 +86,6 @@ CREATE TABLE AGENDAMENTO (
     ID_SERVICO INT NOT NULL,
     DATA_CORTE DATE NOT NULL,
     HORA_CORTE TIME NOT NULL,
-    -- O Status é vital para gerenciar o fluxo do agendamento
     STATUS ENUM(
         'AGENDADO',
         'CONFIRMADO',
@@ -99,16 +99,20 @@ CREATE TABLE AGENDAMENTO (
     DATA_CRIACAO TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ID_CLIENTE) REFERENCES USUARIO(ID),
     FOREIGN KEY (ID_BARBEIRO) REFERENCES USUARIO(ID),
-    FOREIGN KEY (ID_SERVICO) REFERENCES SERVICO(ID),
-    UNIQUE (ID_BARBEIRO, DATA_CORTE, HORA_CORTE) -- Evita agendamento duplo no mesmo horário
+    FOREIGN KEY (ID_SERVICO) REFERENCES SERVICO(ID)
 );
 
--- Tabela para que o cliente possa avaliar o serviço após a conclusão
+-- Índices para buscas rápidas
+CREATE INDEX idx_agendamento_barbeiro_data ON AGENDAMENTO(ID_BARBEIRO, DATA_CORTE, HORA_CORTE);
+CREATE INDEX idx_agendamento_cliente_data ON AGENDAMENTO(ID_CLIENTE, DATA_CORTE);
+
+-- Avaliação de serviço
 CREATE TABLE AVALIACAO (
     ID INT AUTO_INCREMENT PRIMARY KEY,
-    ID_AGENDAMENTO INT NOT NULL UNIQUE, -- Uma avaliação por agendamento
-    NOTA INT NOT NULL, -- de 1 a 5
+    ID_AGENDAMENTO INT NOT NULL UNIQUE,
+    NOTA INT NOT NULL CHECK (NOTA BETWEEN 1 AND 5),
     COMENTARIO TEXT,
     DATA_CRIACAO TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ID_AGENDAMENTO) REFERENCES AGENDAMENTO(ID)
 );
+
