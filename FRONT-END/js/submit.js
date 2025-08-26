@@ -92,11 +92,12 @@ form.addEventListener("submit", (e) => {
   const usuario = form.email.value;
   const senhaOriginal = form.senha.value;
   const nome = form.nome.value;
+  const telefone = form.telefone.value;
 
   fetch("http://127.0.0.1:8081/cadastro", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usuario, nome, senha: senhaOriginal }),
+    body: JSON.stringify({ usuario, nome, senha: senhaOriginal ,telefone}),
   })
   .then((res) => {
     if (!res.ok) throw new Error("Não foi possível efetuar o cadastro");
@@ -109,5 +110,60 @@ form.addEventListener("submit", (e) => {
   .catch((err) => {
     console.error("❌ Erro no cadastro:", err);
     alert("Erro ao cadastrar usuário!");
+  });
+
+  
+});
+
+function enviarMetodo(tipo) {
+  fetch("http://127.0.0.1:8081/enviar_codigo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ tipo, usuario: form.email.value }),
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Erro ao enviar código");
+    return res.json(); // {success: true}
+  })
+  .then(data => {
+    alert(`✅ Código enviado via ${tipo}`);
+    modalEscolha.style.display = "none";
+    modalCodigo.style.display = "block";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ Não foi possível enviar o código");
+  });
+}
+
+btnEmail.addEventListener("click", () => enviarMetodo("email"));
+btnTelefone.addEventListener("click", () => enviarMetodo("telefone"));
+
+// ===================
+// Confirmação do código
+// ===================
+btnConfirmar.addEventListener("click", () => {
+  const codigo = codigoInput.value.trim();
+
+  fetch("http://127.0.0.1:8081/validar_codigo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ usuario: form.email.value, codigo }),
+  })
+  .then(res => res.json()) // {success: true/false}
+  .then(data => {
+    if (data.success) {
+      msgVerificacao.textContent = "✅ Verificação concluída com sucesso!";
+      msgVerificacao.style.color = "green";
+      modalCodigo.style.display = "none";
+    } else {
+      msgVerificacao.textContent = "❌ Código inválido!";
+      msgVerificacao.style.color = "red";
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    msgVerificacao.textContent = "❌ Erro na verificação!";
+    msgVerificacao.style.color = "red";
   });
 });
