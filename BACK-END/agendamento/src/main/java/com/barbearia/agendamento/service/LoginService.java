@@ -1,11 +1,11 @@
 package com.barbearia.agendamento.service;
+import java.util.Optional;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.barbearia.agendamento.entity.CadastroUsuario;
 import com.barbearia.agendamento.repository.CadastroUsuarioRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.Optional;
 
 @Service // Define que esta classe é um serviço gerenciado pelo Spring
 public class LoginService {
@@ -50,6 +50,7 @@ public class LoginService {
         System.out.println("==> Resultado da Comparação (matches): " + senhasCombinam);
         System.out.println("=================================================");
         // --- FIM DO CÓDIGO DE DEPURAÇÃO ---
+        
 
         // Retorna o resultado da comparação
         return senhasCombinam;

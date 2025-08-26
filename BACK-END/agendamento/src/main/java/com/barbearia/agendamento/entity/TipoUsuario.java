@@ -1,13 +1,15 @@
 package com.barbearia.agendamento.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TIPO_USUARIO")
 public class TipoUsuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "CARGO", unique = true, nullable = false)
